@@ -1,0 +1,6 @@
+# Netlify: proxy hacia los servidores de demostración de Traccar (evita CORS)
+/proxy/demo4/*  https://demo4.traccar.org/:splat  200
+/proxy/demo3/*  https://demo3.traccar.org/:splat  200
+/proxy/demo2/*  https://demo2.traccar.org/:splat  200
+/proxy/demo/*   https://demo.traccar.org/:splat   200
+/*              /index.html                       200

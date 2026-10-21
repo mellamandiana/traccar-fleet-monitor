@@ -1,0 +1,143 @@
+/* ==========================================================================
+   Tokens del sistema de diseño
+   Concepto: "luz de sodio". El acento ámbar viene del alumbrado vial nocturno y
+   de la señalética de carretera; marca el vehículo y el foco del teclado.
+   Barlow está inspirada en la señalización vial de California: legible a
+   distancia y con cifras tabulares para lecturas que cambian sin bailar.
+   ========================================================================== */
+
+:root {
+  /* Tipografía */
+  --font-ui: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-readout: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif;
+
+  --text-xs: 0.75rem;    /* 12 */
+  --text-sm: 0.84375rem; /* 13.5 */
+  --text-md: 0.9375rem;  /* 15 */
+  --text-lg: 1.0625rem;  /* 17 */
+  --text-xl: 1.3125rem;  /* 21 */
+  --text-2xl: 1.75rem;   /* 28 */
+  --text-readout: clamp(3rem, 2.4rem + 2.4vw, 4rem);
+
+  --leading-tight: 1.15;
+  --leading-body: 1.5;
+
+  /* Espaciado (base 4) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Radios: la jerarquía también se lee en la curvatura */
+  --radius-xs: 4px;   /* chips, barras */
+  --radius-sm: 8px;   /* controles */
+  --radius-md: 12px;  /* filas de lista */
+  --radius-lg: 18px;  /* paneles */
+  --radius-pill: 999px;
+
+  /* Movimiento */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 480ms;
+  --dur-flash: 1400ms;
+
+  /* Layout */
+  --header-h: 60px;
+  --sidebar-w: 392px;
+  --focus-width: 3px;
+}
+
+/* ---------- Tema claro: turno de día ---------- */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #e6ebf0;
+  --surface: #ffffff;
+  --surface-2: #f2f5f8;
+  --surface-sunken: #e9eef3;
+  --line: #d2dae3;
+  --line-strong: #b4c0cc;
+
+  --ink: #141d27;          /* 17.0:1 sobre surface */
+  --ink-muted: #4a5a6b;    /*  7.1:1 sobre surface */
+  --ink-subtle: #556474;   /*  6.0:1 sobre surface */
+
+  --accent: #e39b12;       /* relleno (marcador, barras) */
+  --accent-ink: #8a5100;   /*  6.4:1 texto/foco sobre surface */
+  --accent-soft: #fdf0d5;
+  --on-accent: #1b1306;
+
+  --online: #0a6b3f;       /*  6.6:1 */
+  --online-soft: #d9f3e6;
+  --offline: #5d6a77;      /*  5.5:1 */
+  --offline-soft: #e6eaee;
+  --unknown: #ad4b14;      /*  5.5:1 */
+  --unknown-soft: #fbe5d8;
+  --danger: #b3261e;       /*  6.5:1 */
+  --danger-soft: #fbe3e1;
+
+  --flash: rgba(227, 155, 18, 0.28);
+  --skeleton-base: #e3e9ef;
+  --skeleton-shine: #f4f7fa;
+
+  --shadow-panel: 0 1px 0 rgba(20, 29, 39, 0.04), 0 8px 24px -12px rgba(20, 29, 39, 0.18);
+  --shadow-float: 0 10px 30px -8px rgba(20, 29, 39, 0.28);
+  --focus-ring: var(--accent-ink);
+  --map-filter: none;
+}
+
+/* ---------- Tema oscuro: turno de noche ---------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0f1822;
+  --surface: #16212d;
+  --surface-2: #1c2937;
+  --surface-sunken: #121c27;
+  --line: #2a394a;
+  --line-strong: #3b4d61;
+
+  --ink: #e9eef3;          /* 13.9:1 sobre surface */
+  --ink-muted: #a3b3c4;    /*  7.6:1 sobre surface */
+  --ink-subtle: #8798aa;   /*  5.5:1 sobre surface */
+
+  --accent: #f2b544;
+  --accent-ink: #f5c25e;   /*  9.9:1 */
+  --accent-soft: rgba(242, 181, 68, 0.14);
+  --on-accent: #1d1505;
+
+  --online: #43d690;       /*  8.7:1 */
+  --online-soft: rgba(67, 214, 144, 0.14);
+  --offline: #94a3b3;      /*  6.3:1 */
+  --offline-soft: rgba(148, 163, 179, 0.14);
+  --unknown: #f29a68;      /*  7.4:1 */
+  --unknown-soft: rgba(242, 154, 104, 0.15);
+  --danger: #ff8a7d;       /*  7.1:1 */
+  --danger-soft: rgba(255, 138, 125, 0.14);
+
+  --flash: rgba(242, 181, 68, 0.22);
+  --skeleton-base: #1d2a38;
+  --skeleton-shine: #263647;
+
+  --shadow-panel: 0 1px 0 rgba(0, 0, 0, 0.25), 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+  --shadow-float: 0 12px 34px -10px rgba(0, 0, 0, 0.7);
+  --focus-ring: var(--accent);
+  --map-filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+    --dur-flash: 0ms;
+  }
+}

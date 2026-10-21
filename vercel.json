@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/proxy/demo4/:path*", "destination": "https://demo4.traccar.org/:path*" },
+    { "source": "/proxy/demo3/:path*", "destination": "https://demo3.traccar.org/:path*" },
+    { "source": "/proxy/demo2/:path*", "destination": "https://demo2.traccar.org/:path*" },
+    { "source": "/proxy/demo/:path*", "destination": "https://demo.traccar.org/:path*" },
+    { "source": "/((?!proxy/).*)", "destination": "/index.html" }
+  ]
+}
