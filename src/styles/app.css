@@ -378,14 +378,54 @@ select {
 /* ==========================================================================
    Login
    ========================================================================== */
+/*
+ * Ilustración de fondo (decorativa, solo CSS: no entra en el árbol de accesibilidad).
+ * Se elige por TEMA (claro/oscuro) y por PROPORCIÓN de la pantalla:
+ *   horizontal (> 5:4) → wide · casi cuadrada (3:4–5:4) → square · vertical (< 3:4) → tall
+ * Las tres composiciones dejan el centro vacío: ahí se apoya el panel.
+ * El color de fondo es el del borde de la imagen, así mientras carga no hay destello.
+ * El tema claro no tiene versión vertical: usa la cuadrada, que recorta bien.
+ */
 .login {
+  --login-bg: #eff0f2;
+  --art-wide: url('/login/light-wide-1440.webp');
+  --art-square: url('/login/light-square-1024.webp');
+  --art-tall: url('/login/light-square-1024.webp');
+  --login-art: var(--art-wide);
+
   min-height: 100%;
   display: grid;
   grid-template-rows: auto 1fr;
   padding: var(--space-4);
-  background:
-    radial-gradient(circle at 18% 12%, var(--accent-soft), transparent 42%),
-    var(--bg);
+  background: var(--login-bg) var(--login-art) center / cover no-repeat;
+}
+:root[data-theme='dark'] .login {
+  --login-bg: #18191d;
+  --art-wide: url('/login/dark-wide-1440.webp');
+  --art-square: url('/login/dark-square-1024.webp');
+  --art-tall: url('/login/dark-tall-720.webp');
+}
+/* Pantallas grandes o densas: versión en alta resolución */
+@media (min-width: 1441px), (min-resolution: 2dppx) {
+  .login {
+    --art-wide: url('/login/light-wide-2560.webp');
+    --art-square: url('/login/light-square-1600.webp');
+    --art-tall: url('/login/light-square-1600.webp');
+  }
+  :root[data-theme='dark'] .login {
+    --art-wide: url('/login/dark-wide-2560.webp');
+    --art-square: url('/login/dark-square-1600.webp');
+    --art-tall: url('/login/dark-tall-1080.webp');
+  }
+}
+@media (max-aspect-ratio: 5/4) {
+  .login { --login-art: var(--art-square); }
+}
+@media (max-aspect-ratio: 3/4) {
+  .login { --login-art: var(--art-tall); }
+}
+@media (prefers-contrast: more) {
+  .login { background-image: none; }
 }
 .login__top {
   display: flex;
@@ -400,7 +440,7 @@ select {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-panel);
+  box-shadow: var(--shadow-float);
   display: grid;
   gap: var(--space-5);
 }
@@ -456,9 +496,15 @@ select {
 }
 
 @media (max-width: 480px) {
+  /* En el móvil el panel ocupa todo el ancho: la ilustración pasa a ser una franja
+     arriba, anclada a la parte superior de la imagen, y el panel se apoya debajo. */
+  .login {
+    background-size: 100% auto;
+    background-position: center -48px;
+  }
   .login__panel {
     padding: var(--space-6) var(--space-5);
-    margin-top: var(--space-2);
+    margin-top: 170px;
   }
 }
 
