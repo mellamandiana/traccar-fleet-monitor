@@ -382,40 +382,89 @@ select {
  * Ilustración de fondo (decorativa, solo CSS: no entra en el árbol de accesibilidad).
  * Se elige por TEMA (claro/oscuro) y por PROPORCIÓN de la pantalla:
  *   horizontal (> 5:4) → wide · casi cuadrada (3:4–5:4) → square · vertical (< 3:4) → tall
- * Las tres composiciones dejan el centro vacío: ahí se apoya el panel.
+ * Las composiciones dejan el centro vacío: ahí se apoya el panel.
  * El color de fondo es el del borde de la imagen, así mientras carga no hay destello.
- * El tema claro no tiene versión vertical: usa la cuadrada, que recorta bien.
+ *
+ * Movimiento: la imagen vive en una capa propia (::before) que «respira» con
+ * un zoom muy lento (1 → 1,05 en 14 s, ida y vuelta, ease-in-out). A esa
+ * velocidad el cambio de tamaño no se percibe como zoom, solo como vida.
+ * Solo anima transform (composición en GPU: sin reflow, CLS 0).
+ * Con «reducir movimiento» la capa queda quieta.
  */
 .login {
-  --login-bg: #eff0f2;
-  --art-wide: url('/login/light-wide-1440.webp');
-  --art-square: url('/login/light-square-1024.webp');
-  --art-tall: url('/login/light-square-1024.webp');
+  --login-bg: #eff1f5;
+  --art-wide: url('/login/light-wide-1200.webp');
+  --art-square: url('/login/light-square-900.webp');
+  --art-tall: url('/login/light-tall-720.webp');
   --login-art: var(--art-wide);
+  --art-size: cover;
+  --art-pos: center;
 
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
   min-height: 100%;
   display: grid;
   grid-template-rows: auto 1fr;
   padding: var(--space-4);
-  background: var(--login-bg) var(--login-art) center / cover no-repeat;
+  background: var(--login-bg);
+}
+.login::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--login-art) var(--art-pos) / var(--art-size) no-repeat;
+  transform-origin: var(--art-origin, 50% 50%);
+  animation: login-breathe 14s ease-in-out infinite alternate;
+  will-change: transform;
+  pointer-events: none;
+}
+@keyframes login-breathe {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+/*
+ * Velo sobre la ilustración: baja su protagonismo para que el panel sea lo
+ * primero que se lee. Es el mismo color de fondo con transparencia, más denso
+ * en el centro (detrás del formulario) y más ligero en los bordes, donde la
+ * ciudad sigue viéndose. Va encima del arte y debajo del panel, y no hace zoom.
+ */
+.login::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 55% 75% at 50% 50%,
+    color-mix(in srgb, var(--login-bg) var(--scrim-center), transparent),
+    color-mix(in srgb, var(--login-bg) var(--scrim-edge), transparent)
+  );
+}
+.login {
+  --scrim-center: 82%;
+  --scrim-edge: 45%;
 }
 :root[data-theme='dark'] .login {
-  --login-bg: #18191d;
-  --art-wide: url('/login/dark-wide-1440.webp');
-  --art-square: url('/login/dark-square-1024.webp');
+  --scrim-center: 80%;
+  --scrim-edge: 50%;
+  --login-bg: #17181b;
+  --art-wide: url('/login/dark-wide-1200.webp');
+  --art-square: url('/login/dark-square-900.webp');
   --art-tall: url('/login/dark-tall-720.webp');
 }
 /* Pantallas grandes o densas: versión en alta resolución */
-@media (min-width: 1441px), (min-resolution: 2dppx) {
+@media (min-width: 1201px), (min-resolution: 2dppx) {
   .login {
-    --art-wide: url('/login/light-wide-2560.webp');
-    --art-square: url('/login/light-square-1600.webp');
-    --art-tall: url('/login/light-square-1600.webp');
+    --art-wide: url('/login/light-wide-1678.webp');
+    --art-square: url('/login/light-square-1254.webp');
+    --art-tall: url('/login/light-tall-937.webp');
   }
   :root[data-theme='dark'] .login {
-    --art-wide: url('/login/dark-wide-2560.webp');
-    --art-square: url('/login/dark-square-1600.webp');
-    --art-tall: url('/login/dark-tall-1080.webp');
+    --art-wide: url('/login/dark-wide-1672.webp');
+    --art-square: url('/login/dark-square-1254.webp');
+    --art-tall: url('/login/dark-tall-937.webp');
   }
 }
 @media (max-aspect-ratio: 5/4) {
@@ -424,9 +473,13 @@ select {
 @media (max-aspect-ratio: 3/4) {
   .login { --login-art: var(--art-tall); }
 }
-@media (prefers-contrast: more) {
-  .login { background-image: none; }
+@media (prefers-reduced-motion: reduce) {
+  .login::before { animation: none; will-change: auto; }
 }
+@media (prefers-contrast: more) {
+  .login::before { display: none; }
+}
+
 .login__top {
   display: flex;
   justify-content: flex-end;
@@ -499,8 +552,9 @@ select {
   /* En el móvil el panel ocupa todo el ancho: la ilustración pasa a ser una franja
      arriba, anclada a la parte superior de la imagen, y el panel se apoya debajo. */
   .login {
-    background-size: 100% auto;
-    background-position: center -48px;
+    --art-origin: 50% 0;
+    --art-size: 100% auto;
+    --art-pos: center -40px;
   }
   .login__panel {
     padding: var(--space-6) var(--space-5);
