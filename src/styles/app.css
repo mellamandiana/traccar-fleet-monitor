@@ -386,7 +386,7 @@ select {
  * El color de fondo es el del borde de la imagen, así mientras carga no hay destello.
  *
  * Movimiento: la imagen vive en una capa propia (::before) que «respira» con
- * un zoom muy lento (1 → 1,05 en 14 s, ida y vuelta, ease-in-out). A esa
+ * un zoom muy lento (1 → 1,05 en 9 s, ida y vuelta, ease-in-out). A esa
  * velocidad el cambio de tamaño no se percibe como zoom, solo como vida.
  * Solo anima transform (composición en GPU: sin reflow, CLS 0).
  * Con «reducir movimiento» la capa queda quieta.
@@ -416,7 +416,7 @@ select {
   z-index: -1;
   background: var(--login-art) var(--art-pos) / var(--art-size) no-repeat;
   transform-origin: var(--art-origin, 50% 50%);
-  animation: login-breathe 14s ease-in-out infinite alternate;
+  animation: login-breathe 9s ease-in-out infinite alternate;
   will-change: transform;
   pointer-events: none;
 }
