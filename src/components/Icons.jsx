@@ -21,6 +21,13 @@ export const LogoutIcon = (p) => (
   </svg>
 );
 
+export const BellIcon = (p) => (
+  <svg {...base} {...p}>
+    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" {...stroke} />
+    <path d="M10 21h4" {...stroke} />
+  </svg>
+);
+
 export const SearchIcon = (p) => (
   <svg {...base} {...p}>
     <circle cx="11" cy="11" r="6.5" {...stroke} />
@@ -66,9 +73,44 @@ export const SignalLostIllustration = () => (
   </svg>
 );
 
-export const BrandMark = () => (
-  <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-    <rect width="32" height="32" rx="8" fill="var(--ink)" />
-    <path d="M16 6 24 25 16 20.5 8 25Z" fill="var(--accent)" />
-  </svg>
-);
+/* ---- Iconografía del diseño de Figma Make (trazo 1,8, puntas redondeadas) ---- */
+const FIGMA_PATHS = {
+  vehicle: (
+    <>
+      <path d="M5 17h14l-1.5-7h-11L5 17Z" />
+      <path d="M7 10l1.5-4h7l1.5 4M7 17v2M17 17v2M8 14h1M15 14h1" />
+    </>
+  ),
+  route: (
+    <>
+      <path d="M5 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+      <path d="M7.5 13.5c3-4 5.5-5 8.5-4" />
+    </>
+  ),
+  battery: (
+    <>
+      <rect x="3" y="7" width="17" height="10" rx="2" />
+      <path d="M20 10h2v4h-2M6 10v4M9 10v4M12 10v4M15 10v4" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </>
+  ),
+  pin: (
+    <>
+      <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </>
+  ),
+};
+
+export function MetricIcon({ name, size = 16 }) {
+  return (
+    <svg className="icon" width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      {FIGMA_PATHS[name]}
+    </svg>
+  );
+}

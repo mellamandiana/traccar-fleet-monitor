@@ -4,6 +4,7 @@ import { useNow } from '../hooks/useEnvironment.js';
 import StatusPill from './StatusPill.jsx';
 import { SearchIcon } from './Icons.jsx';
 import { DeviceListSkeleton } from './Skeletons.jsx';
+import VehicleIcon, { VEHICLE_LABEL, vehicleKind } from './VehicleIcon.jsx';
 
 const ORDER = { online: 0, unknown: 1, offline: 2 };
 
@@ -16,7 +17,7 @@ export default function DeviceList({ devices, loading, stale, selectedId, onSele
   const [query, setQuery] = useState('');
   const [onlyOnline, setOnlyOnline] = useState(false);
   const now = useNow(15000);
-  const ids = { search: useId(), legend: useId(), count: useId() };
+  const ids = { search: 'buscar-vehiculo', legend: useId(), count: useId() };
 
   const filtered = useMemo(() => {
     if (!devices) return [];
@@ -30,7 +31,7 @@ export default function DeviceList({ devices, loading, stale, selectedId, onSele
   const onlineCount = devices?.filter((d) => d.status === 'online').length ?? 0;
 
   return (
-    <section className="card device-list" aria-labelledby={ids.legend}>
+    <section className="card device-list" id="lista-vehiculos" tabIndex={-1} aria-labelledby={ids.legend}>
       <div className="device-list__head">
         <h2 className="device-list__title" id={ids.legend}>
           Vehículos
@@ -94,13 +95,18 @@ export default function DeviceList({ devices, loading, stale, selectedId, onSele
                         checked={checked}
                         onChange={() => onSelect(d.id)}
                       />
-                      {/* El nombre va primero en el DOM para que el lector diga "Camión 07, en línea…";
-                          el punto de estado se recoloca a la izquierda con CSS (order). */}
+                      {/* El nombre va primero en el DOM para que el lector diga "Camión 07, Camión,
+                          en línea…"; el avatar se recoloca a la izquierda con CSS (order). */}
                       <span className="device-row__text">
                         <span className="device-row__name">{d.name}</span>
-                        <span className="device-row__meta">{d.uniqueId}</span>
+                        <span className="device-row__meta">
+                          {VEHICLE_LABEL[vehicleKind(d)]} · {d.uniqueId}
+                        </span>
                       </span>
-                      <StatusPill status={d.status} compact />
+                      <span className="device-row__avatar">
+                        <VehicleIcon kind={vehicleKind(d)} size={20} />
+                        <StatusPill status={d.status} compact />
+                      </span>
                       <span className="device-row__time">{last}</span>
                     </label>
                   </li>

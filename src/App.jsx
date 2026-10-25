@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { createTraccarClient } from './api/traccar.js';
 import { createSimulatedClient } from './api/simulator.js';
 import { DEFAULT_SERVER_ID, serverById } from './config.js';
-import { useTheme } from './hooks/useEnvironment.js';
+import { useSlow, useTheme } from './hooks/useEnvironment.js';
 import LoginScreen from './components/LoginScreen.jsx';
-import Monitor from './components/Monitor.jsx';
+import Monitor, { disarmSimulatedCrash } from './components/Monitor.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { BootSkeleton } from './components/Skeletons.jsx';
 
 const SESSION_KEY = 'fm-server';
@@ -18,6 +19,7 @@ export default function App() {
   const { theme, toggle } = useTheme();
   const [session, setSession] = useState({ phase: 'boot' });
   const [notice, setNotice] = useState(null);
+  const bootSlow = useSlow(session.phase === 'boot');
 
   // Intenta recuperar una sesión previa (la cookie de Traccar puede seguir viva).
   useEffect(() => {
@@ -70,9 +72,10 @@ export default function App() {
     [session],
   );
 
-  if (session.phase === 'boot') return <BootSkeleton />;
+  if (session.phase === 'boot') return <BootSkeleton slow={bootSlow} />;
 
   if (session.phase === 'login') {
+    document.title = 'Iniciar sesión · Monitor de flota · Traccar';
     return (
       <LoginScreen
         initialServerId={session.serverId ?? DEFAULT_SERVER_ID}
@@ -85,14 +88,19 @@ export default function App() {
   }
 
   return (
-    <Monitor
-      client={session.client}
-      user={session.user}
-      server={session.server}
-      simulated={session.simulated}
-      theme={theme}
-      onToggleTheme={toggle}
-      onLogout={handleLogout}
-    />
+    // El ErrorBoundary envuelve SOLO el monitor: la sesión vive aquí fuera, así que
+    // "Volver a cargar la vista" reconstruye el monitor sin pedir login otra vez.
+    <ErrorBoundary onReset={disarmSimulatedCrash}>
+      <Monitor
+        client={session.client}
+        user={session.user}
+        server={session.server}
+        simulated={session.simulated}
+        theme={theme}
+        onToggleTheme={toggle}
+        onLogout={handleLogout}
+        onUseSimulated={session.simulated ? undefined : () => handleLogin({ simulated: true })}
+      />
+    </ErrorBoundary>
   );
 }

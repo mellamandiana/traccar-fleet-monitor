@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePrefersReducedMotion } from '../hooks/useEnvironment.js';
 
 /**
- * Resalta brevemente un valor cuando cambia (fundido ámbar de 1,4 s).
+ * Resalta brevemente un valor cuando cambia (fundido índigo breve).
  * No se dispara en el primer pintado: solo comunica cambios reales.
  */
 export function Flash({ value, children, className = '' }) {

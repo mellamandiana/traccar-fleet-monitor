@@ -17,9 +17,14 @@ export function createTraccarClient(serverId) {
 
     let res;
     try {
-      res = await fetch(`${base}${path}`, {
+      // Datos en vivo: nunca desde caché. `cache: 'no-store'` evita la caché del navegador
+      // y el parámetro `_` (que Traccar ignora) evita que un CDN/proxy, como Netlify,
+      // devuelva una respuesta guardada (p. ej. la lista vacía de antes de crear un vehículo).
+      const url = method === 'GET' ? `${base}${path}${path.includes('?') ? '&' : '?'}_=${Date.now()}` : `${base}${path}`;
+      res = await fetch(url, {
         method,
         body,
+        cache: 'no-store',
         credentials: 'include',
         headers: { Accept: 'application/json', ...headers },
         signal: timeout.signal,
@@ -29,18 +34,24 @@ export function createTraccarClient(serverId) {
       if (timeout.signal.aborted) {
         throw new ApiError(ErrorKind.TIMEOUT, 'Tiempo de espera agotado', { cause: err });
       }
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        throw new ApiError(ErrorKind.OFFLINE, 'El equipo no tiene conexión a internet', { cause: err });
+      }
       throw new ApiError(ErrorKind.NETWORK, 'No se pudo contactar al servidor', { cause: err });
     } finally {
       clearTimeout(timer);
       signal?.removeEventListener('abort', onOuterAbort);
     }
 
-    if (!res.ok) throw fromResponse(res);
+    if (!res.ok) throw fromResponse(res, path);
 
     const type = res.headers.get('content-type') || '';
     if (!type.includes('application/json')) {
-      // Un proxy o una página de error HTML: el servidor no está sirviendo la API.
-      throw new ApiError(ErrorKind.SERVER, 'El servidor no devolvió JSON', { status: res.status });
+      // Llegó HTML (la propia app o una página de error): en esta dirección no está la API.
+      // Típico al desplegar sin las reglas de proxy de vercel.json / _redirects.
+      throw new ApiError(ErrorKind.API_MISSING, `Respuesta ${type || 'sin tipo'} en lugar de JSON (¿falta el proxy /proxy?)`, {
+        status: res.status,
+      });
     }
     return res.json();
   }

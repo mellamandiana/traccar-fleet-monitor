@@ -1,17 +1,21 @@
 import { MoonIcon, SunIcon } from './Icons.jsx';
 
 /**
- * Interruptor de tema. Es un <button> con aria-pressed: el lector anuncia
- * "Tema oscuro, botón de alternancia, presionado" y Space/Enter lo operan.
+ * Interruptor de tema con sol y luna a los lados (diseño de Figma).
+ * Es un <button aria-pressed>: el lector anuncia "Tema oscuro, botón de alternancia,
+ * presionado / no presionado" y lo operan Space y Enter. Los iconos son decorativos;
+ * el nombre accesible es el texto oculto "Tema oscuro".
  */
 export default function ThemeToggle({ theme, onToggle }) {
   const dark = theme === 'dark';
   return (
-    <button type="button" className="theme-toggle" aria-pressed={dark} onClick={onToggle} title={dark ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}>
+    <button type="button" className="theme-toggle" aria-pressed={dark} onClick={onToggle}>
+      <SunIcon className="theme-toggle__icon theme-toggle__icon--sun" width={16} height={16} />
       <span className="theme-toggle__track" aria-hidden="true">
-        <span className="theme-toggle__thumb">{dark ? <MoonIcon width={14} height={14} /> : <SunIcon width={14} height={14} />}</span>
+        <span className="theme-toggle__thumb" />
       </span>
-      <span className="theme-toggle__label">Tema oscuro</span>
+      <MoonIcon className="theme-toggle__icon theme-toggle__icon--moon" width={16} height={16} />
+      <span className="visually-hidden">Tema oscuro</span>
     </button>
   );
 }

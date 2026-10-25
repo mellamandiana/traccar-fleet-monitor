@@ -1,28 +1,40 @@
 /* ==========================================================================
    Tokens del sistema de diseño
-   Concepto: "luz de sodio". El acento ámbar viene del alumbrado vial nocturno y
-   de la señalética de carretera; marca el vehículo y el foco del teclado.
-   Barlow está inspirada en la señalización vial de California: legible a
-   distancia y con cifras tabulares para lecturas que cambian sin bailar.
+   Fuente: Figma Make «Real-Time Vehicle Monitor» (src/index.css).
+   Lenguaje Material: barra índigo, Roboto, tarjetas blancas con elevación,
+   radios contenidos (4–6 px) y acentos índigo.
+
+   Ajustes respecto al Figma (para cumplir WCAG 2.1 AA, ≥ 4,5:1 en texto):
+   - Texto secundario #757575 → #616161 (sobre los fondos tintados no llegaba a AA).
+   - Verde de estado #43a047 → #2e7d32 como texto (3,4:1 → 5,1:1).
+   - Naranja de aviso #fb8c00 → #b45309 como texto.
+   - Tamaño mínimo de texto 12 px (el Figma usaba 9–11 px en etiquetas).
+   - En oscuro, la barra superior no usa --primary-strong (#aab6fe con texto
+     blanco daría 1,9:1); usa un índigo profundo.
    ========================================================================== */
 
 :root {
   /* Tipografía */
-  --font-ui: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-readout: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif;
+  --font-ui: 'Roboto', Arial, system-ui, sans-serif;
+  --font-readout: 'Roboto', Arial, system-ui, sans-serif;
 
   --text-xs: 0.75rem;    /* 12 */
-  --text-sm: 0.84375rem; /* 13.5 */
-  --text-md: 0.9375rem;  /* 15 */
-  --text-lg: 1.0625rem;  /* 17 */
-  --text-xl: 1.3125rem;  /* 21 */
+  --text-sm: 0.8125rem;  /* 13 */
+  --text-md: 0.875rem;   /* 14 — cuerpo del Figma */
+  --text-lg: 1rem;       /* 16 — títulos de tarjeta */
+  --text-xl: 1.25rem;    /* 20 — marca */
   --text-2xl: 1.75rem;   /* 28 */
-  --text-readout: clamp(3rem, 2.4rem + 2.4vw, 4rem);
+  --text-readout: 3rem;  /* 48 — velocidad (display del Figma) */
 
-  --leading-tight: 1.15;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  --leading-tight: 1.1;
   --leading-body: 1.5;
+  --tracking-label: 0.08em;
 
-  /* Espaciado (base 4) */
+  /* Espaciado: múltiplos de 4 */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -33,104 +45,117 @@
   --space-10: 2.5rem;
   --space-12: 3rem;
 
-  /* Radios: la jerarquía también se lee en la curvatura */
-  --radius-xs: 4px;   /* chips, barras */
-  --radius-sm: 8px;   /* controles */
-  --radius-md: 12px;  /* filas de lista */
-  --radius-lg: 18px;  /* paneles */
+  /* Radios */
+  --radius-xs: 4px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 6px;
   --radius-pill: 999px;
 
-  /* Movimiento */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 120ms;
-  --dur-base: 220ms;
-  --dur-slow: 480ms;
-  --dur-flash: 1400ms;
+  /* Movimiento (curva estándar de Material) */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 500ms;
+  --dur-flash: 650ms;
 
   /* Layout */
-  --header-h: 60px;
-  --sidebar-w: 392px;
+  --header-h: 64px;
+  --sidebar-w: 380px;
   --focus-width: 3px;
+
+  /* Barra superior: siempre índigo con texto blanco */
+  --appbar: #1a237e;
+  --on-appbar: #ffffff;
+  --on-appbar-muted: rgba(255, 255, 255, 0.82);
 }
 
-/* ---------- Tema claro: turno de día ---------- */
+/* ---------- Tema claro ---------- */
 :root,
 :root[data-theme='light'] {
   color-scheme: light;
 
-  --bg: #e6ebf0;
+  --bg: #f5f5f5;
   --surface: #ffffff;
-  --surface-2: #f2f5f8;
-  --surface-sunken: #e9eef3;
-  --line: #d2dae3;
-  --line-strong: #b4c0cc;
+  --surface-2: #f5f5f5;
+  --surface-sunken: #eeeeee;
+  --line: #e0e0e0;
+  --line-strong: #bdbdbd;
 
-  --ink: #141d27;          /* 17.0:1 sobre surface */
-  --ink-muted: #4a5a6b;    /*  7.1:1 sobre surface */
-  --ink-subtle: #556474;   /*  6.0:1 sobre surface */
+  --ink: #212121;          /* 16,1:1 sobre surface */
+  --ink-muted: #616161;    /*  6,2:1 */
+  --ink-subtle: #616161;
 
-  --accent: #e39b12;       /* relleno (marcador, barras) */
-  --accent-ink: #8a5100;   /*  6.4:1 texto/foco sobre surface */
-  --accent-soft: #fdf0d5;
-  --on-accent: #1b1306;
+  --accent: #3f51b5;       /* primary — 6,9:1 */
+  --accent-ink: #1a237e;   /* primary-strong — 14,1:1 */
+  --accent-soft: #e8eaf6;  /* primary-soft */
+  --on-accent: #ffffff;
 
-  --online: #0a6b3f;       /*  6.6:1 */
-  --online-soft: #d9f3e6;
-  --offline: #5d6a77;      /*  5.5:1 */
-  --offline-soft: #e6eaee;
-  --unknown: #ad4b14;      /*  5.5:1 */
-  --unknown-soft: #fbe5d8;
-  --danger: #b3261e;       /*  6.5:1 */
-  --danger-soft: #fbe3e1;
+  --online: #2e7d32;       /*  5,1:1 */
+  --online-dot: #43a047;
+  --online-soft: #e8f5e9;
+  --offline: #616161;
+  --offline-soft: #eeeeee;
+  --unknown: #b45309;      /*  5,0:1 */
+  --unknown-soft: #fff3e0;
+  --danger: #c62828;       /*  5,6:1 */
+  --danger-soft: #ffebee;
 
-  --flash: rgba(227, 155, 18, 0.28);
-  --skeleton-base: #e3e9ef;
-  --skeleton-shine: #f4f7fa;
+  --flash: rgba(63, 81, 181, 0.16);
+  --skeleton-base: #eeeeee;
+  --skeleton-shine: #f8f8f8;
 
-  --shadow-panel: 0 1px 0 rgba(20, 29, 39, 0.04), 0 8px 24px -12px rgba(20, 29, 39, 0.18);
-  --shadow-float: 0 10px 30px -8px rgba(20, 29, 39, 0.28);
-  --focus-ring: var(--accent-ink);
+  --shadow-control: 0 1px 3px rgb(0 0 0 / 20%);
+  --shadow-panel: 0 2px 8px rgb(0 0 0 / 14%);
+  --shadow-float: 0 5px 18px rgb(26 35 126 / 30%);
+  --shadow-appbar: 0 2px 5px rgb(0 0 0 / 28%);
+  --focus-ring: #3f51b5;
+  --focus-halo: rgba(63, 81, 181, 0.22);
   --map-filter: none;
 }
 
-/* ---------- Tema oscuro: turno de noche ---------- */
+/* ---------- Tema oscuro ---------- */
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #0f1822;
-  --surface: #16212d;
-  --surface-2: #1c2937;
-  --surface-sunken: #121c27;
-  --line: #2a394a;
-  --line-strong: #3b4d61;
+  --appbar: #1c2257;
 
-  --ink: #e9eef3;          /* 13.9:1 sobre surface */
-  --ink-muted: #a3b3c4;    /*  7.6:1 sobre surface */
-  --ink-subtle: #8798aa;   /*  5.5:1 sobre surface */
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --surface-2: #292929;
+  --surface-sunken: #181818;
+  --line: #383838;
+  --line-strong: #4a4a4a;
 
-  --accent: #f2b544;
-  --accent-ink: #f5c25e;   /*  9.9:1 */
-  --accent-soft: rgba(242, 181, 68, 0.14);
-  --on-accent: #1d1505;
+  --ink: #ffffff;          /* 16,7:1 */
+  --ink-muted: #b0b0b0;    /*  8,3:1 */
+  --ink-subtle: #b0b0b0;
 
-  --online: #43d690;       /*  8.7:1 */
-  --online-soft: rgba(67, 214, 144, 0.14);
-  --offline: #94a3b3;      /*  6.3:1 */
-  --offline-soft: rgba(148, 163, 179, 0.14);
-  --unknown: #f29a68;      /*  7.4:1 */
-  --unknown-soft: rgba(242, 154, 104, 0.15);
-  --danger: #ff8a7d;       /*  7.1:1 */
-  --danger-soft: rgba(255, 138, 125, 0.14);
+  --accent: #7986cb;       /*  5,1:1 */
+  --accent-ink: #aab6fe;   /*  9,0:1 */
+  --accent-soft: #292d4c;
+  --on-accent: #10142e;    /* texto oscuro sobre índigo claro: 5,9:1 (blanco daría 3,3:1) */
 
-  --flash: rgba(242, 181, 68, 0.22);
-  --skeleton-base: #1d2a38;
-  --skeleton-shine: #263647;
+  --online: #66bb6a;
+  --online-dot: #66bb6a;
+  --online-soft: rgba(102, 187, 106, 0.14);
+  --offline: #9e9e9e;
+  --offline-soft: #303030;
+  --unknown: #ffb74d;
+  --unknown-soft: rgba(255, 183, 77, 0.14);
+  --danger: #ef9a9a;
+  --danger-soft: rgba(239, 154, 154, 0.14);
 
-  --shadow-panel: 0 1px 0 rgba(0, 0, 0, 0.25), 0 12px 32px -16px rgba(0, 0, 0, 0.6);
-  --shadow-float: 0 12px 34px -10px rgba(0, 0, 0, 0.7);
-  --focus-ring: var(--accent);
-  --map-filter: none;
+  --flash: rgba(121, 134, 203, 0.22);
+  --skeleton-base: #292929;
+  --skeleton-shine: #333333;
+
+  --shadow-panel: 0 2px 10px rgb(0 0 0 / 38%);
+  --shadow-float: 0 5px 18px rgb(0 0 0 / 55%);
+  --focus-ring: #aab6fe;
+  --focus-halo: rgba(170, 182, 254, 0.24);
+  --map-filter: brightness(0.7) contrast(1.15) saturate(0.75);
 }
 
 @media (prefers-reduced-motion: reduce) {
